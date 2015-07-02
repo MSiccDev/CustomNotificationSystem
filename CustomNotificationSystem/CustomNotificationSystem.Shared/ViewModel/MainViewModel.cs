@@ -1,5 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace CustomNotificationSystem.ViewModel
 {
@@ -22,14 +23,16 @@ namespace CustomNotificationSystem.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            
+            //if you want to collect the notification text in one centralized, use the MVVMLight Messenger
+            //this enables you to show the Notification also after a navigation has taken place
+            Messenger.Default.Register<PropertyChangedMessage<string>>(this, message =>
+            {
+                if (message.PropertyName == ExtendedViewModelBase.NotificationTextPropertyName)
+                {
+                    GlobalNotificationTextProperty = message.NewValue;
+                }
+            });
         }
 
 
@@ -52,11 +55,41 @@ namespace CustomNotificationSystem.ViewModel
                             return;
                         }
 
-                        NotificationText = "This is a test notification";
+                        //if you need the notification only on one page, bind directly to NotificationText
+                        //NotificationText = "This is a test notification via ExtendedViewModelBase";
+
+                        
+                        NotificationText = "This is a test notification via global property on MainViewModel, set via MVVM Light Messenger";
+
                         ClearNotificationText();
 
                     },
                     () => true));
+            }
+        }
+
+
+
+        /// <summary>
+        /// The <see cref="GlobalNotificationTextProperty" /> property's name.
+        /// </summary>
+        public const string GlobalNotificationTextPropertyPropertyName = "GlobalNotificationTextProperty";
+
+        private string _globalNotificationTextProperty = string.Empty;
+
+        /// <summary>
+        /// Sets and gets the GlobalNotificationTextProperty property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public string GlobalNotificationTextProperty
+        {
+            get
+            {
+                return _globalNotificationTextProperty;
+            }
+            set
+            {
+                Set(() => GlobalNotificationTextProperty, ref _globalNotificationTextProperty, value);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 
@@ -38,6 +39,8 @@ namespace CustomNotificationSystem.ViewModel
                 {
                     return;
                 }
+
+
 
                 var oldValue = _notificationText;
                 _notificationText = value;
