@@ -35,7 +35,7 @@ namespace CustomNotificationSystem.ViewModel
             });
         }
 
-
+        private int ct;
 
         private RelayCommand _showNotificationCommand;
 
@@ -59,9 +59,8 @@ namespace CustomNotificationSystem.ViewModel
                         //NotificationText = "This is a test notification via ExtendedViewModelBase";
 
                         
-                        NotificationText = "This is a test notification via global property on MainViewModel, set via MVVM Light Messenger";
-
-                        ClearNotificationText();
+                        
+                        NotificationText = "This is a test notification via global property on MainViewModel, set via MVVM Light Messenger   " + ct++;
 
                     },
                     () => true));

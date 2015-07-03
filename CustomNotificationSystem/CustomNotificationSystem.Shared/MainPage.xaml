@@ -9,8 +9,9 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding Main, Source={StaticResource Locator}}"
-    AppNotificationText ="{Binding GlobalNotificationTextProperty}"
+    AppNotificationText ="{Binding GlobalNotificationTextProperty}" FontFamily="Global User Interface"
     >
+
 
     <Grid>
         <Grid.RowDefinitions>

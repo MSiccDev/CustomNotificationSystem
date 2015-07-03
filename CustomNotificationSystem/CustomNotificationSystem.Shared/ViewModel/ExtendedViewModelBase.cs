@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
+using CustomNotificationSystem.Common;
 using GalaSoft.MvvmLight;
 
 namespace CustomNotificationSystem.ViewModel
@@ -11,8 +14,26 @@ namespace CustomNotificationSystem.ViewModel
     {
         public ExtendedViewModelBase()
         {
-            
+            App.GlobalNotificationDispatcherTimer.Tick += GlobalNotificationDispatcherTimerOnTick;
         }
+
+        private void GlobalNotificationDispatcherTimerOnTick(object sender, object o)
+        {
+            if (_secondsElapsed < 5)
+            {
+                _secondsElapsed ++;
+            }
+            else
+            {
+                App.GlobalNotificationDispatcherTimer.Stop();
+                _secondsElapsed = 0;
+                NotificationText= string.Empty;
+            }
+        }
+
+        private int _secondsElapsed;
+
+
 
         /// <summary>
         /// The <see cref="NotificationText" /> property's name.
@@ -28,10 +49,7 @@ namespace CustomNotificationSystem.ViewModel
         /// </summary>
         public string NotificationText
         {
-            get
-            {
-                return _notificationText;
-            }
+            get { return _notificationText; }
 
             set
             {
@@ -40,25 +58,34 @@ namespace CustomNotificationSystem.ViewModel
                     return;
                 }
 
+                if (value != string.Empty)
+                {
+                    _secondsElapsed = 0;
 
+                    if (!App.GlobalNotificationDispatcherTimer.IsEnabled)
+                    {
+                        App.GlobalNotificationDispatcherTimer.Start();
+                    }
+                }
 
                 var oldValue = _notificationText;
                 _notificationText = value;
 
                 RaisePropertyChanged(() => NotificationText, oldValue, value, true);
 
+
+
+                
             }
         }
 
 
+        
 
 
 
-        public async void ClearNotificationText()
-        {
-            await Task.Delay(5000);
-            NotificationText = string.Empty;
-        }
+
+
 
 
     }

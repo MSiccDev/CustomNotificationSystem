@@ -30,6 +30,8 @@ namespace CustomNotificationSystem
         private TransitionCollection transitions;
 #endif
 
+        public static DispatcherTimer GlobalNotificationDispatcherTimer;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -38,6 +40,8 @@ namespace CustomNotificationSystem
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
+
+            GlobalNotificationDispatcherTimer = new DispatcherTimer() {Interval = new TimeSpan(0,0,1)};
         }
 
         /// <summary>
