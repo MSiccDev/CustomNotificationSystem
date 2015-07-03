@@ -30,7 +30,10 @@ namespace CustomNotificationSystem
         private TransitionCollection transitions;
 #endif
 
+        //app wide dispatcher timer
         public static DispatcherTimer GlobalNotificationDispatcherTimer;
+        //app wide seconds counter
+        public static int GlobalNotificationDispatcherTimerSecondsElepased;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code

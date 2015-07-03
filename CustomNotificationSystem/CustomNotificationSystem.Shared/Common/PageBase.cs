@@ -36,9 +36,8 @@ namespace CustomNotificationSystem.Common
             _navigationHelper.LoadState += NavigationHelperLoadState;
             _navigationHelper.SaveState += NavigationHelperSaveState;
 
-
-
             //instantiate and create StackPanel and TextBlock
+            //you can put anything you want in the panel
             _panel = new StackPanel()
             {
                 Background = new SolidColorBrush(Colors.Blue),
@@ -54,6 +53,12 @@ namespace CustomNotificationSystem.Common
             _panel.Children.Add(_textBlock);
         }
 
+        /// <summary>
+        /// Gets a list DependencyObject from the Visual Tree
+        /// </summary>
+        /// <typeparam name="T">the type of the desired object</typeparam>
+        /// <param name="results">List of children</param>
+        /// <param name="startNode">the DependencyObject to start the search with</param>
         public static void FindChildren<T>(List<T> results, DependencyObject startNode) where T : DependencyObject
         {
             int count = VisualTreeHelper.GetChildrenCount(startNode);
@@ -71,7 +76,9 @@ namespace CustomNotificationSystem.Common
 
 
 
-
+        /// <summary>
+        /// global property to bind the notification text against
+        /// </summary>
         public static readonly DependencyProperty AppNotificationTextProperty = DependencyProperty.Register(
             "AppNotificationText", typeof (string), typeof (PageBase), new PropertyMetadata(string.Empty, (s, e) =>
             {
@@ -85,12 +92,19 @@ namespace CustomNotificationSystem.Common
                 current.CheckifNotificationMessageIsNeeded(s);
             }));
 
+        /// <summary>
+        /// gets or sets the AppNotificationText
+        /// </summary>
         public string AppNotificationText
         {
             get { return (string)GetValue(AppNotificationTextProperty); }
             set { SetValue(AppNotificationTextProperty, value); }}
 
 
+        /// <summary>
+        /// handles the visibility of the notification
+        /// </summary>
+        /// <param name="currentDependencyObject">the primary depenedency object to start with</param>
         private void CheckifNotificationMessageIsNeeded(DependencyObject currentDependencyObject)
         {
             if (currentDependencyObject == null) return;
@@ -122,6 +136,7 @@ namespace CustomNotificationSystem.Common
                     _panel.Visibility = Visibility.Collapsed;
                 }
         }
+
 
 
 

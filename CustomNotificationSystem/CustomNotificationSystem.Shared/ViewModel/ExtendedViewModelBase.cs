@@ -14,27 +14,28 @@ namespace CustomNotificationSystem.ViewModel
     {
         public ExtendedViewModelBase()
         {
+            //hooking up the Tick event
             App.GlobalNotificationDispatcherTimer.Tick += GlobalNotificationDispatcherTimerOnTick;
         }
 
+        /// <summary>
+        /// handles the elapsed time and stops it after the desired time of visibility is over
+        /// </summary>
         private void GlobalNotificationDispatcherTimerOnTick(object sender, object o)
         {
-            if (_secondsElapsed < 5)
+            if (App.GlobalNotificationDispatcherTimerSecondsElepased < 5)
             {
-                _secondsElapsed ++;
+                App.GlobalNotificationDispatcherTimerSecondsElepased ++;
             }
             else
             {
                 App.GlobalNotificationDispatcherTimer.Stop();
-                _secondsElapsed = 0;
+                App.GlobalNotificationDispatcherTimerSecondsElepased = 0;
                 NotificationText= string.Empty;
             }
         }
 
-        private int _secondsElapsed;
-
-
-
+       
         /// <summary>
         /// The <see cref="NotificationText" /> property's name.
         /// </summary>
@@ -58,10 +59,9 @@ namespace CustomNotificationSystem.ViewModel
                     return;
                 }
 
+                //handling timer start and reset
                 if (value != string.Empty)
                 {
-                    _secondsElapsed = 0;
-
                     if (!App.GlobalNotificationDispatcherTimer.IsEnabled)
                     {
                         App.GlobalNotificationDispatcherTimer.Start();
@@ -72,10 +72,6 @@ namespace CustomNotificationSystem.ViewModel
                 _notificationText = value;
 
                 RaisePropertyChanged(() => NotificationText, oldValue, value, true);
-
-
-
-                
             }
         }
 

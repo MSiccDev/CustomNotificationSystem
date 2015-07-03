@@ -31,6 +31,12 @@ namespace CustomNotificationSystem.ViewModel
                 if (message.PropertyName == ExtendedViewModelBase.NotificationTextPropertyName)
                 {
                     GlobalNotificationTextProperty = message.NewValue;
+
+                    //needed here to make sure the timer really gets set back to 0!
+                    if (!string.IsNullOrEmpty(message.NewValue))
+                    {
+                        App.GlobalNotificationDispatcherTimerSecondsElepased = 0;
+                    }
                 }
             });
         }
