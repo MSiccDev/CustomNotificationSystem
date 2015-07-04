@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using CustomNotificationSystem.Common;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace CustomNotificationSystem.ViewModel
 {
@@ -14,28 +15,10 @@ namespace CustomNotificationSystem.ViewModel
     {
         public ExtendedViewModelBase()
         {
-            //hooking up the Tick event
-            App.GlobalNotificationDispatcherTimer.Tick += GlobalNotificationDispatcherTimerOnTick;
+            
         }
 
-        /// <summary>
-        /// handles the elapsed time and stops it after the desired time of visibility is over
-        /// </summary>
-        private void GlobalNotificationDispatcherTimerOnTick(object sender, object o)
-        {
-            if (App.GlobalNotificationDispatcherTimerSecondsElepased < 5)
-            {
-                App.GlobalNotificationDispatcherTimerSecondsElepased ++;
-            }
-            else
-            {
-                App.GlobalNotificationDispatcherTimer.Stop();
-                App.GlobalNotificationDispatcherTimerSecondsElepased = 0;
-                NotificationText= string.Empty;
-            }
-        }
 
-       
         /// <summary>
         /// The <see cref="NotificationText" /> property's name.
         /// </summary>
@@ -50,28 +33,13 @@ namespace CustomNotificationSystem.ViewModel
         /// </summary>
         public string NotificationText
         {
-            get { return _notificationText; }
-
+            get
+            {
+                return  _notificationText = string.Empty;
+            }
             set
             {
-                if (_notificationText == value)
-                {
-                    return;
-                }
-
-                //handling timer start and reset
-                if (value != string.Empty)
-                {
-                    if (!App.GlobalNotificationDispatcherTimer.IsEnabled)
-                    {
-                        App.GlobalNotificationDispatcherTimer.Start();
-                    }
-                }
-
-                var oldValue = _notificationText;
-                _notificationText = value;
-
-                RaisePropertyChanged(() => NotificationText, oldValue, value, true);
+                Set(() => NotificationText, ref _notificationText, value, true);
             }
         }
 

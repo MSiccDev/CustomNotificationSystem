@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="{Binding Main, Source={StaticResource Locator}}"
-    AppNotificationText ="{Binding GlobalNotificationTextProperty}" FontFamily="Global User Interface"
+    AppNotificationText ="{Binding GlobalNotificationText}" FontFamily="Global User Interface"
     >
 
 

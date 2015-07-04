@@ -1,3 +1,5 @@
+using System;
+using Windows.UI.Xaml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -18,28 +20,49 @@ namespace CustomNotificationSystem.ViewModel
     /// </summary>
     public class MainViewModel : ExtendedViewModelBase
     {
+
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
-            
-            //if you want to collect the notification text in one centralized, use the MVVMLight Messenger
-            //this enables you to show the Notification also after a navigation has taken place
+            _notificationTimer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 1) };
+            _notificationTimer.Tick += _notificationTimer_Tick;
+
+            //register for the global NotificationText PropertyChangedMessage from all VMs that derive from ExtendenViewModelBase
             Messenger.Default.Register<PropertyChangedMessage<string>>(this, message =>
             {
                 if (message.PropertyName == ExtendedViewModelBase.NotificationTextPropertyName)
                 {
-                    GlobalNotificationTextProperty = message.NewValue;
-
-                    //needed here to make sure the timer really gets set back to 0!
-                    if (!string.IsNullOrEmpty(message.NewValue))
+                    if (!_notificationTimer.IsEnabled)
                     {
-                        App.GlobalNotificationDispatcherTimerSecondsElepased = 0;
+                        _notificationTimer.Start();
                     }
+                    else
+                    {
+                        _notificationTimerElapsedSeconds = 0;
+                    }
+
+                    GlobalNotificationText = message.NewValue;
                 }
             });
         }
+
+        private void _notificationTimer_Tick(object sender, object e)
+        {
+            _notificationTimerElapsedSeconds++;
+
+            if (_notificationTimerElapsedSeconds > 5)
+            {
+                _notificationTimer.Stop();
+                _notificationTimerElapsedSeconds = 0;
+                GlobalNotificationText = string.Empty;
+            }
+        }
+
+        private readonly DispatcherTimer _notificationTimer;
+        private int _notificationTimerElapsedSeconds;
 
         private int ct;
 
@@ -60,11 +83,6 @@ namespace CustomNotificationSystem.ViewModel
                         {
                             return;
                         }
-
-                        //if you need the notification only on one page, bind directly to NotificationText
-                        //NotificationText = "This is a test notification via ExtendedViewModelBase";
-
-                        
                         
                         NotificationText = "This is a test notification via global property on MainViewModel, set via MVVM Light Messenger   " + ct++;
 
@@ -76,25 +94,25 @@ namespace CustomNotificationSystem.ViewModel
 
 
         /// <summary>
-        /// The <see cref="GlobalNotificationTextProperty" /> property's name.
+        /// The <see cref="GlobalNotificationText" /> property's name.
         /// </summary>
-        public const string GlobalNotificationTextPropertyPropertyName = "GlobalNotificationTextProperty";
+        public const string GlobalNotificationTextPropertyName = "GlobalNotificationText";
 
-        private string _globalNotificationTextProperty = string.Empty;
+        private string _globalNotificationText = string.Empty;
 
         /// <summary>
-        /// Sets and gets the GlobalNotificationTextProperty property.
+        /// Sets and gets the GlobalNotificationText property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// </summary>
-        public string GlobalNotificationTextProperty
+        public string GlobalNotificationText
         {
             get
             {
-                return _globalNotificationTextProperty;
+                return _globalNotificationText;
             }
             set
             {
-                Set(() => GlobalNotificationTextProperty, ref _globalNotificationTextProperty, value);
+                Set(() => GlobalNotificationText, ref _globalNotificationText, value);
             }
         }
     }
